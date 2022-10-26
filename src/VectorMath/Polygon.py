@@ -21,6 +21,18 @@ class Polygon:
             else:
                 p1 = self.points[i]
 
+            p0abovePlane = plane.above_plane(p0)
+            p1abovePlane = plane.above_plane(p1)
+
+            if not p0abovePlane:
+                discard.append(p0)
+            else:
+                new_points.append(p0)
+
+            if not p0abovePlane == p1abovePlane:
+                intersection = plane.get_line_intersection(Line(p0, p1))
+                new_points
+
             if plane.above_plane(p0):
                 new_points.append(p0)
                 if not plane.above_plane(p1):
@@ -43,12 +55,3 @@ class Polygon:
             data += "{" + "\"x\": {}, \"y\": {}, \"z\": {}".format(p.x, p.y, p.z) + "},"
 
         return "[" + data[:-1] + "]"
-
-
-if __name__ == "__main__":
-    points = [[0, 0, 0], [10, 0, 0], [4, 5, 0], [10, 10, 0], [0, 10, 0]]
-    polygon = Polygon(vmath.Vector3Array(points))
-    plane = Plane(vmath.Vector3([5, 0, 0]), vmath.Vector3([1, 0, 0]))
-    cut_data = polygon.cut(plane)
-    print(cut_data[0])
-    print(cut_data[1])

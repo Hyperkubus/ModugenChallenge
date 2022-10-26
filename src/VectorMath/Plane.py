@@ -30,19 +30,23 @@ class Plane:
         return self
 
     def on_plane(self, point: vmath.Vector3) -> bool:
+        """Checks if point is on plane"""
         if np.dot(self.normal, (point - self.origin)) == 0:
             return True
         return False
 
     def above_plane(self, point: vmath.Vector3) -> bool:
+        """Check if point is above plane"""
         return (np.sign(np.dot((point - self.origin), self.normal))) > 0
 
+    """finds intersection point between line and point"""
     def get_line_intersection(self, line: Line) -> vmath.Vector3:
         if self.on_plane(line.p1) and self.on_plane(line.p2):
             raise ValueError("Line lies on plane.")
         if self.above_plane(line.p1) == self.above_plane(line.p2):
             raise ValueError("Plane does not cut line.")
 
+        """Taken from https://stackoverflow.com/questions/5666222/3d-line-plane-intersection"""
         u = vmath.Vector3(line.p2 - line.p1)
         dot = np.dot(self.origin, u)
 
@@ -50,19 +54,3 @@ class Plane:
         fac = - np.dot(self.origin, w) / dot
         u *= fac
         return vmath.Vector3(line.p1 + u)
-
-
-if __name__ == "__main__":
-    Test = Plane().new_from_points(vmath.Vector3Array([
-        vmath.Vector3([1, 0, 0]),
-        vmath.Vector3([1, 1, 0]),
-        vmath.Vector3([1, 0, 1]),
-    ]))
-    print("Origin is [1,0,0]: {}".format(Test.origin == vmath.Vector3([1, 0, 0])))
-    print("Normal is [1,0,0]: {}".format(Test.origin == vmath.Vector3([1, 0, 0])))
-
-    print("[2,0,0] is above Plane: {}".format(Test.above_plane(vmath.Vector3([2, 0, 0])) == True))
-    print("[0,0,0] is below Plane: {}".format(Test.above_plane(vmath.Vector3([0, 0, 0])) == False))
-
-    testLine = Line(vmath.Vector3([0, 0, 0]), vmath.Vector3([2, 2, 2]))
-    print("Line cut plane at: {}".format(Test.get_line_intersection(testLine)))
